@@ -1,0 +1,1 @@
+# chatgpt_shortcut_extention_by_r
