@@ -2,7 +2,7 @@
     "manifest_version": 3,
     "name": "chatgpt shortcut by R",
     "version": "1",
-    "permissions": ["sidePanel", "scripting", "storage", "tabs", "notifications", "activeTab","clipboardWrite",
+    "permissions": ["sidePanel", "scripting", "storage", "tabs", "notifications", "windows", "activeTab","clipboardWrite",
         "clipboardRead"],
     "side_panel": {"default_path": "sidepanel.html"},
     "background": {"service_worker": "background.js"},

@@ -1,93 +1,153 @@
+
 var tid = 0;
 document.getElementById('submitBtn').addEventListener('click', () => {
     const userInput = document.getElementById('userInput').value;
 
     // Open ChatGPT in a new tab
-    chrome.tabs.create({
-        url: 'https://chat.openai.com'
-    }, (tab) => {
+    chrome.tabs.create({ url: 'https://chat.openai.com' }, (tab) => {
         if (chrome.runtime.lastError) {
             console.error('Error creating tab:', chrome.runtime.lastError.message);
             return;
         }
-
+    
         console.log('Tab ID:', tab.id); // Log the created tab ID
         tid = tab.id;
         // Use a delay to ensure the tab is loaded before executing the script
         setTimeout(() => {
             chrome.scripting.executeScript({
-                target: {
-                    tabId: tab.id
-                },
+                target: { tabId: tab.id },
                 func: (input) => {
+                    // Create a loading overlay
+                    const loaderDiv = document.createElement('div');
+                loaderDiv.style.position = 'fixed';
+                loaderDiv.style.top = '0';
+                loaderDiv.style.left = '0';
+                loaderDiv.style.width = '100%';
+                loaderDiv.style.height = '100%';
+                loaderDiv.style.backgroundColor = 'rgba(0, 0, 0, 1)'; // Dark background
+                loaderDiv.style.zIndex = '9999'; // Ensure it covers everything
+                loaderDiv.style.display = 'flex';
+                loaderDiv.style.flexDirection = 'column';
+                loaderDiv.style.justifyContent = 'center';
+                loaderDiv.style.alignItems = 'center';
+                loaderDiv.innerHTML = `
+                    <div class="loader"></div>
+                    <div id="countdown" style="margin-top: 20px; font-size: 24px; color: #ffffff; text-align: center;">Redirecting in <span id="time">Few</span> seconds...</div>
+                `;
+                document.body.appendChild(loaderDiv); // Append the loader to the body
+
+                loaderDiv.classList.add('fade-in');
+                setTimeout(() => {
+                    loaderDiv.classList.remove('fade-in');
+                    loaderDiv.classList.add('fade-out');
+                }, countdown * 1000);  // Remove the loader after the countdown
+
+                // CSS for loader animation (you can customize this)
+                const style = document.createElement('style');
+                style.innerHTML = `
+                    .loader {
+                        border: 8px solid #f3f3f3; /* Light grey */
+                        border-top: 8px solid #3498db; /* Blue */
+                        border-radius: 50%;
+                        width: 50px;
+                        height: 50px;
+                        animation: spin 1s linear infinite;
+                    }
+
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                document.head.appendChild(style);
+    
                     // Find the chat input element using its attributes
                     const chatInput = document.querySelector('p[data-placeholder="Message ChatGPT"].placeholder');
                     if (chatInput) {
                         // Set the inner HTML with the user input
                         chatInput.innerHTML = input;
-                        chatInput.dispatchEvent(new Event('input', {
-                            bubbles: true
-                        })); // Trigger input event
-
+                        chatInput.dispatchEvent(new Event('input', { bubbles: true })); // Trigger input event
+    
                         // Function to check for the send button's visibility and click it
                         const checkAndClickSendButton = () => {
                             const sendButton = document.querySelector('button[aria-label="Send prompt"][data-testid="send-button"]');
                             if (sendButton && !sendButton.disabled) {
                                 sendButton.click(); // Click the send button
                                 console.log('Send button clicked.');
-
+    
                                 // Wait for 15 seconds and check for the copy button
-                                setTimeout(checkForCopyButton, 1000); // Wait for 15 seconds
+                                setTimeout(checkForCopyButton, 1000); // Wait for the copy button
                             } else {
                                 console.log('Send button not ready yet, retrying...');
                                 setTimeout(checkAndClickSendButton, 500); // Retry after 500ms
                             }
                         };
-
+    
                         // Function to check for the copy button and click it
                         const checkForCopyButton = () => {
                             const copyButton = document.querySelector('button[aria-label="Copy"][data-testid="copy-turn-action-button"]');
                             if (copyButton) {
                                 copyButton.click(); // Click the copy button
                                 console.log('Copy button clicked.');
-
+    
                                 // Use a delay to ensure the document is focused
                                 setTimeout(() => {
                                     // Now try to read from the clipboard
                                     navigator.clipboard.readText()
                                         .then((copiedText) => {
                                             console.log('Copied text:', copiedText);
-
+    
                                             // Send the copied text back to the extension
-                                            chrome.runtime.sendMessage({
-                                                responseText: copiedText
-                                            });
+                                            chrome.runtime.sendMessage({ responseText: copiedText });
+    
+                                            // Start countdown before closing the tab
+                                            startCountdown(tab.id, loaderDiv);
                                         })
                                         .catch((error) => {
                                             console.error('Failed to copy text:', error);
+                                            document.body.removeChild(loaderDiv); // Remove the loader on error
                                         });
-                                }, 1000); // Adjust this timeout as necessary (e.g., 1000ms)
+                                }, 1000); // Adjust this timeout as necessary
                             } else {
                                 console.log('Copy button not available yet, retrying...');
                                 setTimeout(checkForCopyButton, 500); // Retry after 500ms
                             }
                         };
-
+    
                         // Start checking for the send button's visibility
                         checkAndClickSendButton();
                     } else {
                         console.error('Chat input not found.');
+                        document.body.removeChild(loaderDiv); // Remove the loader if chat input not found
+                    }
+    
+                    // Function to handle countdown
+                    function startCountdown(tabId, loader) {
+                        let countdown = 3; // 3 seconds countdown
+                        const countdownElement = document.getElementById('time');
+                        const interval = setInterval(() => {
+                            countdown--;
+                            countdownElement.textContent = countdown;
+                            if (countdown <= 0) {
+                                clearInterval(interval); // Clear the interval
+                                document.body.removeChild(loader); // Remove the loader
+                                chrome.tabs.remove(tabId); // Close the tab
+                            }
+                        }, 1000); // Update every second
                     }
                 },
                 args: [userInput],
             }).catch(error => {
                 console.error('Error executing script:', error);
             });
-        }, 1000); // Increase to 10 seconds or more
+        }, 2000); // Increase to 10 seconds or more if needed
     });
+    
+    
 });
 
 // Listen for messages from the content script
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.responseText) {
         const responseDiv = $('#responseDiv');
@@ -120,7 +180,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     `;
 
                     // Remove code blocks from non-code HTML
-                    nonCodeHtml = nonCodeHtml.replace(codeBlock, '');
+                    nonCodeHtml = nonCodeHtml.replace(codeBlock, ''); 
                 });
             }
 
@@ -177,10 +237,10 @@ function formatMarkdown(text) {
     // Example implementation of Markdown formatting (customize as needed)
     // Convert *bold* to <strong>bold</strong>
     text = text.replace(/\*(.*?)\*/g, '<strong>$1</strong>');
-
+    
     // Convert _italic_ to <em>italic</em>
     text = text.replace(/_(.*?)_/g, '<em>$1</em>');
-
+    
     // Convert [link text](url) to <a href="url">link text</a>
     text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
 
@@ -189,3 +249,61 @@ function formatMarkdown(text) {
 
     return text; // Return the formatted text
 }
+
+document.getElementById('theme-toggle').addEventListener('click', () => {
+    document.body.classList.toggle('dark-mode');
+});
+
+function closeTabWithAnimation(tabId) {
+    let opacity = 1;
+    const interval = setInterval(() => {
+        opacity -= 0.1;
+        document.body.style.opacity = opacity;
+        if (opacity <= 0) {
+            clearInterval(interval);
+            chrome.tabs.remove(tabId); // Close tab after animation
+        }
+    }, 50);
+}
+
+
+function smoothCloseAnimation(tabId) {
+    // Create an overlay that will simulate the tab closing animation
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = '0';
+    overlay.style.left = '0';
+    overlay.style.width = '100%';
+    overlay.style.height = '100%';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)'; // Dark background
+    overlay.style.zIndex = '9999'; // On top of everything
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.transition = 'all 1s ease'; // Smooth transition effect
+    
+    // Add text or other visuals to the overlay
+    overlay.innerHTML = `
+        <div style="color: white; font-size: 24px; text-align: center;">
+            <p>Closing the tab...</p>
+            <p style="font-size: 14px;">Please wait...</p>
+        </div>
+    `;
+
+    document.body.appendChild(overlay); // Append overlay to the page
+
+    // Start animation after a short delay
+    setTimeout(() => {
+        // Simulate shrinking effect (or you can do a fade-out)
+        overlay.style.transform = 'scale(0.1)';
+        overlay.style.opacity = '0';
+
+        // After animation ends (1 second in this case), close the tab
+        setTimeout(() => {
+            chrome.tabs.remove(tabId, () => {
+                console.log('Tab closed smoothly.');
+            });
+        }, 1000); // Match this delay to the length of the transition
+    }, 500); // Initial delay before starting the animation
+}
+

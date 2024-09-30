@@ -8,6 +8,16 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
       <style>
+        .fade-in {
+        opacity: 0;
+        transition: opacity 0.5s ease-in;
+        }
+
+        .fade-out {
+            opacity: 1;
+            transition: opacity 0.5s ease-out;
+        }
+
          body {
          background-color: #1e1e1e;
          color: #ffffff;
@@ -190,6 +200,11 @@
          a:hover {
          text-decoration: underline;
          }
+         .dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
       </style>
    </head>
    <body>
@@ -199,6 +214,7 @@
          <button id="submitBtn"> <img src="up-arrow.svg" class="arrow" alt=""> </button>
       </div>
       <div id="responseDiv"></div>
+      <button id="theme-toggle">Toggle Dark/Light Mode</button>
       <button class="copy-button" id="copyButton">Copy Response</button>
       <script src="js/popup.js"></script>
    </body>
