@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <script src="js/jquery-3.7.1.min.js"></script>
+      <title>ChatGPT Auto Prompt</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+      <style>
+         body {
+         background-color: #1e1e1e;
+         color: #ffffff;
+         font-family: Arial, sans-serif;
+         padding: 10px;
+         }
+         
+         #responseDiv {
+         position: absolute;
+         top: 60%;
+         width: 85%;
+         padding: 15px;
+         background-color: #2e2e2e;
+         border-radius: 10px;
+         line-height: 1.6;
+         word-wrap: break-word;
+         max-height: 400px;
+         overflow-y: auto;
+         }
+
+         code {
+         font-family: 'Courier New', monospace;
+         background-color: #3e3e3e;
+         color: #dcdcaa;
+         padding: 2px 4px;
+         border-radius: 4px;
+         margin-right: 10px;
+         }
+         
+         b {
+         font-weight: bold;
+         }
+
+         pre {
+         background-color: #2d2d2d;
+         color: #e5e5e5;
+         padding: 10px;
+         border-radius: 5px;
+         overflow-x: auto;
+         font-family: 'Courier New', monospace;
+         margin-top: 10px;
+         }
+         
+         .copy-button {
+         margin-top: 10px;
+         padding: 5px 10px;
+         background-color: #007acc;
+         color: white;
+         border: none;
+         border-radius: 4px;
+         cursor: pointer;
+         }
+         
+         .copy-button:hover {
+         background-color: #005999;
+         }
+         
+         input {
+         border-radius: 25px;
+         border: 1px solid white;
+         height: 20px;
+         background: black;
+         color: white;
+         padding: 10px;
+         width: 75%;
+         margin: 5px;
+         }
+         
+         .searchicon {
+         font-size: 24px;
+         padding: 10px;
+         }
+         
+         .search {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         height: 100vh;
+         }
+         
+         #submitBtn {
+         max-height: 25px;
+         min-height: 25px;
+         max-width: 25px;
+         min-width: 25px;
+         border-radius: 25px;
+         padding: 5%;
+         position: relative;
+         background: gray;
+         border: 0;
+         }
+         
+         .arrow {
+         height: 15px;
+         width: 15px;
+         position: absolute;
+         top: 30%;
+         right: 0;
+         left: 40%;
+         bottom: 0;
+         }
+         
+         .logo {
+         height: 15%;
+         width: 40%;
+         position: absolute;
+         left: 30%;
+         top: 25%;
+         right: 0;
+         bottom: 0;
+         object-fit: fill;
+         }
+         
+         #responseDiv h3 {
+         color: #dcdcaa;
+         font-size: 1.2em;
+         margin-top: 20px;
+         margin-bottom: 10px;
+         }
+         
+         #responseDiv ul, #responseDiv ol {
+         margin-left: 20px;
+         margin-bottom: 15px;
+         }
+         
+         #responseDiv li {
+         margin-bottom: 10px;
+         }
+         
+         .code-block {
+         margin-bottom: 20px;
+         padding: 10px;
+         background-color: #1e1e1e;
+         border-left: 5px solid #66ccff;
+         border-radius: 5px;
+         }
+         
+         #copiedTextDisplay {
+         line-height: 25px;
+         color: black;
+         }
+         
+         #responseDiv blockquote {
+         border-left: 4px solid #dcdcaa;
+         margin-left: 0;
+         padding-left: 10px;
+         color: #b3b3b3;
+         font-style: italic;
+         margin-bottom: 15px;
+         }
+         
+         .language-name {
+         font-size: 1.5em;
+         margin-top: 20px;
+         margin-bottom: 10px;
+         color: #66ccff;
+         }
+         
+         .formatted-text {
+         line-height: 1.6;
+         margin-top: 10px;
+         color: #ffffff;
+         }
+         
+         strong {
+         font-weight: bold;
+         color: #66ccff;
+         }
+         
+         em {
+         font-style: italic;
+         color: #dcdcaa;
+         }
+         
+         a {
+         color: #1e90ff;
+         text-decoration: none;
+         }
+         
+         a:hover {
+         text-decoration: underline;
+         }
+      </style>
+   </head>
+   <body>
+      <img src="logo.png" class="logo" alt="">
+      <div class="search">
+         <i class="fa fa-search searchicon" ></i><input type="text" id="userInput" placeholder="Enter your prompt here" />
+         <button id="submitBtn"> <img src="up-arrow.svg" class="arrow" alt=""> </button>
+      </div>
+      <div id="responseDiv"></div>
+      <button class="copy-button" id="copyButton">Copy Response</button>
+      <script src="js/popup.js"></script>
+   </body>
+</html>

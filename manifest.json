@@ -1,0 +1,12 @@
+{
+    "manifest_version": 3,
+    "name": "chatgpt shortcut by R",
+    "version": "1",
+    "permissions": ["sidePanel", "scripting", "storage", "tabs", "notifications", "activeTab","clipboardWrite",
+        "clipboardRead"],
+    "side_panel": {"default_path": "sidepanel.html"},
+    "background": {"service_worker": "background.js"},
+    "action": {"default_title": "Click to open panel"},
+    "host_permissions": ["<all_urls>", "http://localhost/*", "https://%2A/*"]
+    
+  }
