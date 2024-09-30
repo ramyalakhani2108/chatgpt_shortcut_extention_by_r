@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Chrome extension provides [brief description of what your extension does]. Follow the steps below to set it up and upload it to Google Chrome.
+This Chrome extension provides a shorter way to use chatgpt from anywhere you are . Follow the steps below to set it up and upload it to Google Chrome.
 
 ## Prerequisites
 
