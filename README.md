@@ -11,7 +11,7 @@ This Chrome extension provides a shorter way to use chatgpt from anywhere you ar
 ## Setup Instructions
 
 1. **Download the Extension**
-   - Download the ZIP file of the extension from [insert download link].
+   - Download the ZIP file of the extension from code button from this repo.
 
 2. **Unzip the File**
    - Locate the downloaded ZIP file and unzip it. You can usually do this by right-clicking the file and selecting "Extract All" or using your preferred unzipping tool.
@@ -36,7 +36,7 @@ This Chrome extension provides a shorter way to use chatgpt from anywhere you ar
 
 ## Feedback
 
-For any questions or feedback, please contact [your contact information or link to issues page].
+For any questions or feedback, please contact lakhani.ramya.u@gmail.com.
 
 ## License
 
