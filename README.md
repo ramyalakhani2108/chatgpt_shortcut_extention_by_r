@@ -45,3 +45,9 @@ This project is licensed under the [insert license name, if applicable].
 ---
 
 Happy browsing! 🌐
+
+## Here is how it works
+
+https://github.com/user-attachments/assets/200e3550-adc2-4849-97f6-10468df46b55
+
+
