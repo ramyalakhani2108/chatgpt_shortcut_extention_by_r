@@ -40,7 +40,7 @@ For any questions or feedback, please contact [your contact information or link 
 
 ## License
 
-This project is licensed under the [insert license name, if applicable].
+This project is licensed under the [@ramaylakhani2108].
 
 ---
 
